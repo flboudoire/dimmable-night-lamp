@@ -1,19 +1,21 @@
 #include <RotaryEncoder.h>
 
-#define ROTARYMIN 100
-#define ROTARYMAX 0
-int lastPos = ROTARYMIN;
+#define ROTARYMIN 0
+#define ROTARYMAX 50
+#define ROTARYSTART 25
+int lastPos = ROTARYSTART;
 RotaryEncoder encoder(3, 5);
 
 #include  <TimerOne.h>          // Avaiable from http://www.arduino.cc/playground/Code/Timer1
 #define DIMMIN 100
 #define DIMMAX 0
+#define DIMSTART 50
 volatile int i=0;               // Variable to use as a counter volatile as it is in an interrupt
 volatile boolean zero_cross=0;  // Boolean to store a "switch" to tell us if we have crossed zero
 int AC_pin = 9;                 // Output to Opto Triac
-int dim = DIMMIN;               // Dimming level (0-128)  0 = on, 128 = 0ff
+int dim = DIMSTART;               // Dimming level (0-128)  0 = on, 128 = 0ff
 
-int freqStep = 85;    // This is the delay-per-brightness step in microseconds.
+int freqStep = 65;    // This is the delay-per-brightness step in microseconds.
                       // For 60 Hz it should be 65
 // It is calculated based on the frequency of your voltage supply (50Hz or 60Hz)
 // and the number of brightness steps you want. 
@@ -38,11 +40,8 @@ void setup() {                                      // Begin setup
   // to the function we use to check to see if it is 
   // the right time to fire the triac.  This function 
   // will now run every freqStep in microseconds.  
-  encoder.setPosition(ROTARYMIN);
-  for(int t=128; t>=DIMMIN; t--){
-    dim = t;
-  }
-  // Serial.begin(9600);        
+  encoder.setPosition(ROTARYSTART);
+  Serial.begin(9600);        
 }
 
 void zero_cross_detect() {    
@@ -80,8 +79,8 @@ void loop() {
   }
 
   if (lastPos != newPos) {
-    dim = map(newPos, ROTARYMIN, ROTARYMAX, DIMMIN, DIMMAX);
-    // Serial.println(dim);
+    dim = map(newPos, ROTARYMAX, ROTARYMIN, DIMMIN, DIMMAX);
+    Serial.println(dim);
     lastPos = newPos;
   }
 }
