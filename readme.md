@@ -20,4 +20,5 @@
 
 <p align="center">
     <img src="3d views.png" width="600px">
+    <img src="pic.png" width="200px">
 </p>
